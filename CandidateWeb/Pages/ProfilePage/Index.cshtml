@@ -4,67 +4,171 @@
 @{
     ViewData["Title"] = "Index";
     String RoleID = HttpContext.Session.GetString("RoleID");
-    if (RoleID != "1" && RoleID !="2")
+    if (RoleID != "1" && RoleID != "2")
     {
         Response.Redirect("/NotPermission");
     }
 }
 
-<h1>Index</h1>
-<p>
-    @{
-        if(RoleID == "1")
-        {
-            <a asp-page="Create" class="btn btn-primary">Create New</a>
-        }
-    }
-</p>
+<div class="text-center mb-4">
+    <h1 class="page-title">Candidate Profiles</h1>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.CandidateProfile[0].Fullname)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CandidateProfile[0].Birthday)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CandidateProfile[0].ProfileShortDescription)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CandidateProfile[0].ProfileUrl)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CandidateProfile[0].Posting)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model.CandidateProfile) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Fullname)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Birthday)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ProfileShortDescription)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ProfileUrl)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Posting.PostingId)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.CandidateId">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.CandidateId">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.CandidateId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    @if (RoleID == "1")
+    {
+        <a asp-page="Create" class="btn btn-primary create-btn">Create New</a>
+    }
+
+    <!-- Logout Link -->
+    <a href="/Login" class="btn btn-secondary">Logout</a>
+</div>
+
+<div class="table-container">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.CandidateProfile[0].Fullname)</th>
+                <th>@Html.DisplayNameFor(model => model.CandidateProfile[0].Birthday)</th>
+                <th>@Html.DisplayNameFor(model => model.CandidateProfile[0].ProfileShortDescription)</th>
+                <th>@Html.DisplayNameFor(model => model.CandidateProfile[0].ProfileUrl)</th>
+                <th>@Html.DisplayNameFor(model => model.CandidateProfile[0].Posting)</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.CandidateProfile)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.Fullname)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Birthday)</td>
+                    <td>@Html.DisplayFor(modelItem => item.ProfileShortDescription)</td>
+                    <td>
+                        <a href="@item.ProfileUrl" target="_blank" class="profile-link">@Html.DisplayFor(modelItem => item.ProfileUrl)</a>
+                    </td>
+                    <td>@Html.DisplayFor(modelItem => item.Posting.PostingId)</td>
+                    <td>
+                        <a asp-page="./Edit" asp-route-id="@item.CandidateId" class="action-link edit-link">Edit</a> |
+                        <a asp-page="./Details" asp-route-id="@item.CandidateId" class="action-link details-link">Details</a> |
+                        <a asp-page="./Delete" asp-route-id="@item.CandidateId" class="action-link delete-link">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<style>
+    /* Page Title */
+    .page-title {
+        text-align: center;
+        color: #333;
+        margin: 20px 0;
+        font-size: 2em;
+        font-weight: bold;
+    }
+
+    /* Centered Button */
+    .text-center {
+        text-align: center;
+    }
+
+    .btn-primary.create-btn {
+        padding: 10px 20px;
+        background-color: #007bff;
+        border: none;
+        color: white;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .btn-primary.create-btn:hover {
+            background-color: #0056b3;
+            box-shadow: 0px 4px 10px rgba(0, 91, 187, 0.3);
+        }
+
+    .btn-secondary {
+        padding: 10px 20px;
+        background-color: #6c757d;
+        border: none;
+        color: white;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        margin-left: 10px; /* Add some space between buttons */
+    }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            box-shadow: 0px 4px 10px rgba(0, 91, 187, 0.3);
+        }
+
+    /* Table Styling */
+    .table-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    table.table-hover {
+        width: 100%;
+        max-width: 1000px;
+        border-collapse: collapse;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    thead {
+        background-color: #007bff;
+        color: white;
+    }
+
+    th, td {
+        padding: 12px;
+        text-align: center;
+        border: 1px solid #ddd;
+    }
+
+    tbody tr {
+        transition: background-color 0.3s ease;
+    }
+
+        tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+    /* Action Links */
+    .action-link {
+        color: #007bff;
+        text-decoration: none;
+        margin: 0 5px;
+        font-weight: 500;
+        transition: color 0.3s ease;
+    }
+
+        .action-link:hover {
+            color: #0056b3;
+        }
+
+    .delete-link {
+        color: #dc3545;
+    }
+
+        .delete-link:hover {
+            color: #b52b38;
+        }
+
+    /* Profile Link */
+    .profile-link {
+        color: #007bff;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+        .profile-link:hover {
+            color: #0056b3;
+            text-decoration: underline;
+        }
+</style>

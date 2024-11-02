@@ -85,21 +85,36 @@ namespace Candidate_DAO
         public bool UpdateProfile(CandidateProfile candidateProfile)
         {
             bool isSuccess = false;
-            CandidateProfile candidate = GetCandidateProfile(candidateProfile.CandidateId);
 
             try
             {
-                if (candidate != null)
+                // Fetch the existing candidate profile from the database
+                CandidateProfile existingCandidate = GetCandidateProfile(candidateProfile.CandidateId);
+
+                if (existingCandidate != null)
                 {
-                    dbContext.Entry<CandidateProfile>(candidate).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+                    // Update the properties of the existing candidate profile
+                    existingCandidate.Fullname = candidateProfile.Fullname;
+                    existingCandidate.Birthday = candidateProfile.Birthday;
+                    existingCandidate.ProfileShortDescription = candidateProfile.ProfileShortDescription;
+                    existingCandidate.ProfileUrl = candidateProfile.ProfileUrl;
+                    existingCandidate.PostingId = candidateProfile.PostingId;
+
+                    // Mark the existing entity as modified
+                    dbContext.Entry(existingCandidate).State = EntityState.Modified;
+
+                    // Save changes to the database
                     dbContext.SaveChanges();
                     isSuccess = true;
                 }
             }
             catch (Exception ex)
             {
-
+                // Log the exception (use your preferred logging framework)
+                // For example: _logger.LogError(ex, "Error updating profile for candidate ID: {CandidateId}", candidateProfile.CandidateId);
+                // You might also want to handle specific exception types here
             }
+
             return isSuccess;
         }
     }
